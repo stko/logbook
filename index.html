@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+
+	<title>Logbook - What is going on?</title>
+
+	<link rel="stylesheet" href="logbook.css">
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+</head>
+
+<body>
+	<div id="app">
+		<v-app>
+			<v-main>
+				<v-container>Hello world
+					<div id="wzOverview" class="ui-section" v-if="workZoneTable.length>0">
+						<table class="blueTable">
+							<tr>
+								<th>Workzone</th>
+								<th>Open Tasks</th>
+							</tr>
+							<tr v-for="row in workZoneTable">
+								<td><a v-bind:href=" 'javascript:showWorkZoneByName(\u0022' + row.name + '\u0022);' ">{{
+										row.name }}</a>
+								</td>
+								<td>{{ row.count }}</td>
+							</tr>
+						</table>
+					</div>
+					<div class="ui-section">
+						<div id="taskTimer" v-if="visible">
+
+						</div>
+						<div id="editTask">
+						</div>
+						<div id="bottomeditdiv" v-if="visible">
+							<button class="ui-button ui-widget ui-corner-all" id='cancelJsonEditor'>Cancel</button>
+							<span style="float: right;">
+								<label for="commitMsg">Commit Message:</label>
+								<input class="ui-widget ui-corner-all" id="commitMsg">
+								<button class="ui-button ui-widget ui-corner-all" id='submitJsonEditor'
+									disabled="disabled">Commit
+									Changes</button>
+							</span>
+						</div>
+					</div>
+				</v-container>
+			</v-main>
+		</v-app>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<!-- https://github.com/json-editor/json-editor -->
+	<script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+	<script src="logbook.js"></script>
+	<script>
+
+	</script>
+</body>
+
+</html>
