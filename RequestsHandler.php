@@ -47,7 +47,7 @@ class RequestsHandler  {
 	public function getRequestSchema($requestID) {
 		$values = $this->db->select("requestlist", [
 			"content",
-			"workzoneid"
+			"workzone_id"
 			], [
 			"id[=]" => $requestID
 		]);
@@ -55,7 +55,7 @@ class RequestsHandler  {
 			return "{}";
 		}else{
 
-			$this->dumpModel($this->getModel($values[0]["workzoneid"]));
+			$this->dumpModel($this->getModel($values[0]["workzone_id"]));
 
 
 			return json_decode($values[0]["content"]);
@@ -70,13 +70,13 @@ class RequestsHandler  {
 		$values = $this->db->select("requestlist", [
 			"id",
 			], [
-			"workzoneid[=]" => $wzID,
+			"workzone_id[=]" => $wzID,
 			"requestnameid[=]" => $requestID
 		]);
 		if (empty($values)){
 			$json=json_decode($content);
 			$data= [
-				"workzoneid" => $wzID,
+				"workzone_id" => $wzID,
 				"requestnameid" => $requestID,
 				"ownerid" => $actualUser["id"],
 				"title" => $title,
@@ -100,7 +100,7 @@ class RequestsHandler  {
 		}
 	}
 
-	public function setRequestValues($data,$userID){
+	public function setRequestValues($data,$user_id){
 		if (!isset($data["requestID"]) 
 		or !isset($data["predecessorState"])
 		or !isset($data["validated"])
@@ -111,12 +111,12 @@ class RequestsHandler  {
 			die('{"errorcode":1, "error": "Variable Error"}');
 		}
 		$values = $this->db->select("requestlist", [
-			"workzoneid",
+			"workzone_id",
 			"state"
 			], [
 			"id[=]" => $data["requestID"]
 		]);
-		$wzID=$values[0]["workzoneid"];
+		$wzID=$values[0]["workzone_id"];
 		$oldState=$values[0]["state"];
 		$newState=$data["state"];
 		$newEdgeState=$data["state"];
@@ -135,7 +135,7 @@ class RequestsHandler  {
 			$values = $this->db->update("edgelist", [
 					"state" => $newEdgeState
 				], [
-				"workzoneid[=]" => $wzID,
+				"workzone_id[=]" => $wzID,
 				"fromrequestid[=]" => $data["requestID"]
 			]);
 
@@ -168,7 +168,7 @@ class RequestsHandler  {
 			var_dump($userInfo);
 			$result = ob_get_clean();
 		} else {
-			$owner=$userID; 
+			$owner=$user_id; 
 		}
 		
 
@@ -176,7 +176,7 @@ class RequestsHandler  {
 			"requestid" => $data["requestID"],
 			"timestamp" => time(),
 			"changetype" => 0,
-			"userid" => $userID,
+			"user_id" => $user_id,
 			"requestowner" => $owner,
 			"predecessorState" => $data["predecessorState"],
 			"validated" => $data["validated"],
@@ -188,7 +188,7 @@ class RequestsHandler  {
 
 	public function getWorkZoneOverview($wzName){
 		$data = $this->db->query(
-			"SELECT <workzone.objname> , COUNT(<requestlist.id>)  FROM <workzone> INNER JOIN  <logbook_requestlist> ON  <workzone.id> = <requestlist.workzoneid> WHERE (lower(<workzone.objname>) LIKE lower( :workzonename ) ) AND <requestlist.state> != :state GROUP BY <workzone.objname>" , [
+			"SELECT <workzone.objname> , COUNT(<requestlist.id>)  FROM <workzone> INNER JOIN  <logbook_requestlist> ON  <workzone.id> = <requestlist.workzone_id> WHERE (lower(<workzone.objname>) LIKE lower( :workzonename ) ) AND <requestlist.state> != :state GROUP BY <workzone.objname>" , [
 				":workzonename" => "%".$wzName."%",
 				":state" => 1
 			]
@@ -326,7 +326,7 @@ class RequestsHandler  {
 				$wzID=$this->wz->createWorkZone($wzName);
 				$requestIDs=array();
 
-				die('{"errorcode":0, "data": { "workzoneid" :'.$wzID.', "workzonename": "'.$wzName.'" } }');
+				die('{"errorcode":0, "data": { "workzone_id" :'.$wzID.', "workzonename": "'.$wzName.'" } }');
 			}
 			if ($action==3){ //request Work Zone overview
 				error_log("request Work Zone overview");

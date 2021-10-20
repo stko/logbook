@@ -17,7 +17,7 @@ CREATE TABLE logbook_tasknames (
 			name VARCHAR( 200 ) NOT NULL );
 CREATE TABLE logbook_tasklist (
 			id INTEGER PRIMARY KEY AUTO_INCREMENT,
-			workzoneid INTEGER NOT NULL,
+			workzone_id INTEGER NOT NULL,
 			tasknameid INTEGER NOT NULL,
 			ownerid INTEGER NOT NULL,
 			startdate INTEGER NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE logbook_tasklist (
 			state INTEGER NOT NULL);
 CREATE TABLE logbook_edgelist (
 			id INTEGER PRIMARY KEY AUTO_INCREMENT,
-			workzoneid INTEGER NOT NULL,
+			workzone_id INTEGER NOT NULL,
 			fromtaskid INTEGER NOT NULL,
 			totaskid INTEGER NOT NULL,
 			state INTEGER NOT NULL);
@@ -40,7 +40,7 @@ CREATE TABLE logbook_changelog (
 			id INTEGER PRIMARY KEY AUTO_INCREMENT,
 			taskid INTEGER NOT NULL,
 			timestamp INTEGER NOT NULL,
-			userid INTEGER NOT NULL,
+			user_id INTEGER NOT NULL,
 			taskowner INTEGER NOT NULL,
 			predecessorState INTEGER NOT NULL,
 			validated INTEGER NOT NULL,

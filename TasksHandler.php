@@ -51,7 +51,7 @@ class TasksHandler  {
 	public function getTaskSchema($taskID) {
 		$values = $this->db->select("tasklist", [
 			"content",
-			"workzoneid"
+			"workzone_id"
 			], [
 			"id[=]" => $taskID
 		]);
@@ -59,7 +59,7 @@ class TasksHandler  {
 			return "{}";
 		}else{
 
-			$this->dumpModel($this->getModel($values[0]["workzoneid"]));
+			$this->dumpModel($this->getModel($values[0]["workzone_id"]));
 
 
 			return json_decode($values[0]["content"]);
@@ -86,13 +86,13 @@ class TasksHandler  {
 		$values = $this->db->select("tasklist", [
 			"id",
 			], [
-			"workzoneid[=]" => $wzID,
+			"workzone_id[=]" => $wzID,
 			"tasknameid[=]" => $taskID
 		]);
 		if (empty($values)){
 			$json=json_decode($content);
 			$data= [
-				"workzoneid" => $wzID,
+				"workzone_id" => $wzID,
 				"tasknameid" => $taskID,
 				"ownerid" => $actualUser["id"],
 				"title" => $title,
@@ -121,13 +121,13 @@ class TasksHandler  {
 		$values = $this->db->update("edgelist", [
 				"state" => $state
 			], [
-			"workzoneid[=]" => $wzID,
+			"workzone_id[=]" => $wzID,
 			"fromtaskid[=]" => $fromTaskID,
 			"toTaskID[=]" => $toTaskID
 		]);
 		if ($values->rowCount()==0){
 			$this->db->insert("edgelist", [
-				"workzoneid" => $wzID,
+				"workzone_id" => $wzID,
 				"fromtaskid" => $fromTaskID,
 				"totaskid" => $toTaskID,
 				"state" => $state
@@ -138,7 +138,7 @@ class TasksHandler  {
 		}
 	}
 
-	public function setTaskValues($data,$userID){
+	public function setTaskValues($data,$user_id){
 		if (!isset($data["taskID"]) 
 		or !isset($data["predecessorState"])
 		or !isset($data["validated"])
@@ -149,12 +149,12 @@ class TasksHandler  {
 			die('{"errorcode":1, "error": "Variable Error"}');
 		}
 		$values = $this->db->select("tasklist", [
-			"workzoneid",
+			"workzone_id",
 			"state"
 			], [
 			"id[=]" => $data["taskID"]
 		]);
-		$wzID=$values[0]["workzoneid"];
+		$wzID=$values[0]["workzone_id"];
 		$oldState=$values[0]["state"];
 		$newState=$data["state"];
 		$newEdgeState=$data["state"];
@@ -173,7 +173,7 @@ class TasksHandler  {
 			$values = $this->db->update("edgelist", [
 					"state" => $newEdgeState
 				], [
-				"workzoneid[=]" => $wzID,
+				"workzone_id[=]" => $wzID,
 				"fromtaskid[=]" => $data["taskID"]
 			]);
 
@@ -206,7 +206,7 @@ class TasksHandler  {
 			var_dump($userInfo);
 			$result = ob_get_clean();
 		} else {
-			$owner=$userID; 
+			$owner=$user_id; 
 		}
 		
 
@@ -214,7 +214,7 @@ class TasksHandler  {
 			"taskid" => $data["taskID"],
 			"timestamp" => time(),
 			"changetype" => 0,
-			"userid" => $userID,
+			"user_id" => $user_id,
 			"taskowner" => $owner,
 			"predecessorState" => $data["predecessorState"],
 			"validated" => $data["validated"],
@@ -227,7 +227,7 @@ class TasksHandler  {
 	
 	public function getWorkZoneOverview($wzName){
 		$data = $this->db->query(
-			"SELECT <workzone.name> , COUNT(<tasklist.id>)  FROM <workzone> INNER JOIN  <logbook_tasklist> ON  <workzone.id> = <tasklist.workzoneid> WHERE (lower(<workzone.name>) LIKE lower( :workzonename ) ) AND <tasklist.state> != :state GROUP BY <workzone.name>" , [
+			"SELECT <workzone.name> , COUNT(<tasklist.id>)  FROM <workzone> INNER JOIN  <logbook_tasklist> ON  <workzone.id> = <tasklist.workzone_id> WHERE (lower(<workzone.name>) LIKE lower( :workzonename ) ) AND <tasklist.state> != :state GROUP BY <workzone.name>" , [
 				":workzonename" => "%".$wzName."%",
 				":state" => 1
 			]
@@ -266,7 +266,7 @@ class TasksHandler  {
 			"taskid" => $taskID,
 			"timestamp" => time(),
 			"changetype" => 1,
-			"userid" => $actualUser["id"],
+			"user_id" => $actualUser["id"],
 			"taskowner" => $taskOwner,
 			"predecessorState" => 0,
 			"validated" => 0,
@@ -327,7 +327,7 @@ class TasksHandler  {
 	public function showWorkZoneByName($wzName){
 		ob_start();
 		$tasks = $this->db->select("tasklist", [
-			"[>]workzone" => ["workzoneid" => "id"],
+			"[>]workzone" => ["workzone_id" => "id"],
 			"[>]tasknames" => ["tasknameid" => "id"],
 			"[>]users" => ["ownerid" => "id"],
 			"[>]statecodes" => ["state" => "state"],
@@ -350,7 +350,7 @@ class TasksHandler  {
 		error_log("------showWorkZoneByName ".$result);
 
 		$edges = $this->db->select("edgelist", [
-			"[>]workzone" => ["workzoneid" => "id"]
+			"[>]workzone" => ["workzone_id" => "id"]
 		],
 		[
 			"edgelist.id",
@@ -381,7 +381,7 @@ class TasksHandler  {
 			"changelog.taskid",
 			"changelog.timestamp",
 			"changelog.changetype",
-			"changelog.userid",
+			"changelog.user_id",
 			"changelog.taskowner",
 			"changelog.predecessorState",
 			"changelog.validated",
@@ -397,7 +397,7 @@ class TasksHandler  {
 		foreach ($changelog as $change){
 			array_push($history["comments"], [
 				"user"=>$change["firstname"]." ".$change["lastname"],
-				"userid"=>$change["userid"],
+				"user_id"=>$change["user_id"],
 				"comment"=>$change["comment"],
 				"timestamp"=>date("r",$change["timestamp"])
 			]);
@@ -410,7 +410,7 @@ class TasksHandler  {
 					if(!isset($history["values"][$name]) || $history["values"][$name]["value"]!=$value ){
 						$history["values"][$name]=[
 							"user"=>$change["firstname"]." ".$change["lastname"],
-							"userid"=>$change["userid"],
+							"user_id"=>$change["user_id"],
 							"comment"=>$change["comment"],
 							"name"=>$name,
 							"timestamp"=>date("m/d/Y H:i:s",$change["timestamp"]),
@@ -863,7 +863,7 @@ s3 -> s1 [label = "Accepted"];
 	}
 
 	
-	public function getModel($workzoneid){
+	public function getModel($workzone_id){
 		$tasks = $this->db->select("tasklist", 
 			[
 				"tasklist.id",
@@ -878,7 +878,7 @@ s3 -> s1 [label = "Accepted"];
 				"tasklist.ismilestone"
 				],
 			[
-				"workzoneid" => $workzoneid
+				"workzone_id" => $workzone_id
 			]
 		);
 		$edges = $this->db->select("edgelist", 
@@ -889,7 +889,7 @@ s3 -> s1 [label = "Accepted"];
 				"edgelist.state"
 			],
 			[
-				"workzoneid" => $workzoneid
+				"workzone_id" => $workzone_id
 			]
 		);
 		$sortedTasks=[];
@@ -924,8 +924,8 @@ s3 -> s1 [label = "Accepted"];
 	}
 
 
-	public function updateModelState($workzoneid,$newStateTask){
-		$model=$this->getModel($workzoneid);
+	public function updateModelState($workzone_id,$newStateTask){
+		$model=$this->getModel($workzone_id);
 		$this->updateTaskTree($model,[$newStateTask]);
 		$this->calculateModelData($model);
 
@@ -974,7 +974,7 @@ s3 -> s1 [label = "Accepted"];
 		[
 			"tasklist.fulfillrate",
 			"edgelist.totaskid",
-			"edgelist.workzoneid",
+			"edgelist.workzone_id",
 			"edgelist.state",
 		],
 		[
@@ -983,7 +983,7 @@ s3 -> s1 [label = "Accepted"];
 		$taskfulfillrate=$preTaskState[0]["fulfillrate"];
 		$edgeState=$preTaskState[0]["state"];
 		$newStateTask=$preTaskState[0]["totaskid"];
-		$workzoneid=$preTaskState[0]["workzoneid"];
+		$workzone_id=$preTaskState[0]["workzone_id"];
 		
 		if ($edgeState==6){ //if ignore
 			$newState= 3; // marked as "reworked", so the user has to accept the data 
@@ -995,7 +995,7 @@ s3 -> s1 [label = "Accepted"];
 		], [
 			"id" => $edgeID
 		]);
-		$this->updateModelState($workzoneid,$newStateTask);
+		$this->updateModelState($workzone_id,$newStateTask);
 		return true;
 	}
 	
@@ -1008,7 +1008,7 @@ s3 -> s1 [label = "Accepted"];
 			"tasklist.state(taskstate)",
 			"edgelist.totaskid",
 			"edgelist.state",
-			"edgelist.workzoneid",
+			"edgelist.workzone_id",
 		],
 		[
 			"edgelist.id[=]" => $edgeID
@@ -1016,13 +1016,13 @@ s3 -> s1 [label = "Accepted"];
 		$taskState=$preTaskState[0]["taskstate"];
 		$edgeState=$preTaskState[0]["state"];
 		$newStateTask=$preTaskState[0]["totaskid"];
-		$workzoneid=$preTaskState[0]["workzoneid"];
+		$workzone_id=$preTaskState[0]["workzone_id"];
 		$data = $this->db->update("edgelist", [
 			"state" => $taskState
 		], [
 			"id" => $edgeID
 		]);
-		$this->updateModelState($workzoneid,$newStateTask);
+		$this->updateModelState($workzone_id,$newStateTask);
 		return true;
 	}
 	
@@ -1074,7 +1074,7 @@ s3 -> s1 [label = "Accepted"];
 						$this->createOrModifyEdge($wzID,$fromTaskID,$toTaskID,0);
 					}
 				}
-				die('{"errorcode":0, "data": { "workzoneid" :'.$wzID.', "workzonename": "'.$wzName.'" } }');
+				die('{"errorcode":0, "data": { "workzone_id" :'.$wzID.', "workzonename": "'.$wzName.'" } }');
 			}
 			if ($action==3){ //request Work Zone overview
 				error_log("request Work Zone overview");

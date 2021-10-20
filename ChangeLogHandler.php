@@ -35,7 +35,7 @@ class ChangelogHandler  {
 			"requestid" => $requestID,
 			"timestamp" => time(),
 			"changetype" => 1,
-			"userid" => $actualUser["id"],
+			"user_id" => $actualUser["id"],
 			"requestowner" => $requestOwner,
 			"predecessorState" => 0,
 			"validated" => 0,
@@ -56,7 +56,7 @@ class ChangelogHandler  {
 			"changelog.requestid",
 			"changelog.timestamp",
 			"changelog.changetype",
-			"changelog.userid",
+			"changelog.user_id",
 			"changelog.requestowner",
 			"changelog.predecessorState",
 			"changelog.validated",
@@ -72,7 +72,7 @@ class ChangelogHandler  {
 		foreach ($changelog as $change){
 			array_push($history["comments"], [
 				"user"=>$change["firstname"]." ".$change["lastname"],
-				"userid"=>$change["userid"],
+				"user_id"=>$change["user_id"],
 				"comment"=>$change["comment"],
 				"timestamp"=>date("r",$change["timestamp"])
 			]);
@@ -85,7 +85,7 @@ class ChangelogHandler  {
 					if(!isset($history["values"][$name]) || $history["values"][$name]["value"]!=$value ){
 						$history["values"][$name]=[
 							"user"=>$change["firstname"]." ".$change["lastname"],
-							"userid"=>$change["userid"],
+							"user_id"=>$change["user_id"],
 							"comment"=>$change["comment"],
 							"name"=>$name,
 							"timestamp"=>date("m/d/Y H:i:s",$change["timestamp"]),

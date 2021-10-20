@@ -13,8 +13,8 @@ $database = Database::instance();
 
 /*
 $data = $database->query(
-	"SELECT <taskname.name> FROM <taskname>,<tasklist> WHERE <tasklist.workzoneid> = :workzoneid AND <tasklist.state> != :state AND <taskname.id> = <tasklist.tasknameid>" , [
-		":workzoneid" => 2,
+	"SELECT <taskname.name> FROM <taskname>,<tasklist> WHERE <tasklist.workzone_id> = :workzone_id AND <tasklist.state> != :state AND <taskname.id> = <tasklist.tasknameid>" , [
+		":workzone_id" => 2,
 		":state" => 1
 	]
 )->fetchAll();
@@ -27,7 +27,7 @@ if (true){
 				"tasklist.state"
 			],
 			[
-				"workzoneid" => 3
+				"workzone_id" => 3
 			]
 		);
 }else{
@@ -82,10 +82,10 @@ if ($data===false){
 }
 var_dump($database->log());
 
-//	"SELECT <workzone.name> , COUNT (<tasklist.id>)  FROM <workzone> INNER JOIN  <logbook_tasklist> ON  <workzone.id> = <tasklist.workzoneid> WHERE (lower(<workzone.name>) LIKE lower( :workzonename ) ) AND <tasklist.state> != :state "
+//	"SELECT <workzone.name> , COUNT (<tasklist.id>)  FROM <workzone> INNER JOIN  <logbook_tasklist> ON  <workzone.id> = <tasklist.workzone_id> WHERE (lower(<workzone.name>) LIKE lower( :workzonename ) ) AND <tasklist.state> != :state "
 
 
-/*"SELECT <workzone.name> ,COUNT (<tasklist.id>) FROM <workzone> , <logbook_tasklist> WHERE (lower(<workzone.name>) LIKE :workzonename ) AND <tasklist.state> != :state AND <workzone.id> = <tasklist.workzoneid>" , [
+/*"SELECT <workzone.name> ,COUNT (<tasklist.id>) FROM <workzone> , <logbook_tasklist> WHERE (lower(<workzone.name>) LIKE :workzonename ) AND <tasklist.state> != :state AND <workzone.id> = <tasklist.workzone_id>" , [
 		":workzonename" => "%customer%",
 		":state" => 1
 */

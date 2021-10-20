@@ -22,9 +22,9 @@ INSERT INTO logbook_roles VALUES(3,'Developer');
 -- do the role assignments
 CREATE TABLE logbook_roles_assignments (
 			id INTEGER PRIMARY KEY, 
-			workzoneid INTEGER NOT NULL,
-			rolenameid INTEGER NOT NULL,
-			userid INTEGER NOT NULL
+			workzone_id INTEGER NOT NULL,
+			rolename_id INTEGER NOT NULL,
+			user_id INTEGER NOT NULL
 			);
 INSERT INTO logbook_roles_assignments VALUES(1,1,1,1);
 INSERT INTO logbook_roles_assignments VALUES(2,1,2,2);
