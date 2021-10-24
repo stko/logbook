@@ -1,4 +1,8 @@
 <?php
+/* todo -- take the user names, who have logged in and add a user entry
+for them, to which a role can be applied later
+*/
+
 $actualUser=[
     "id" => 1,
     "wz" => 1,
@@ -6,3 +10,4 @@ $actualUser=[
     "surname"=>"Köhler",
     "name"=>"Steffen Köhler"]
 ?>
+

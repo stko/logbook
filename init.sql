@@ -79,12 +79,14 @@ INSERT INTO logbook_task_proposals VALUES(4,3,2);
 
 CREATE TABLE logbook_part_requests (
 			id INTEGER PRIMARY KEY, 
-			request_id  INTEGER,
+			request_template_id  INTEGER,
 			part_id  INTEGER,
+			user_id  INTEGER, -- the originator
+			start_time  INTEGER, -- creation
 			objvalue TEXT,
 			request_state  INTEGER
 			);
-INSERT INTO logbook_part_requests VALUES(1,1,1,'',0);
+INSERT INTO logbook_part_requests VALUES(1,1,1,1,1,"{}",0);
 
 
 /*
@@ -107,9 +109,10 @@ CREATE TABLE logbook_part_tasks (
 			id INTEGER PRIMARY KEY, 
 			part_id  INTEGER,
 			task_template_id  INTEGER,
+			user_id  INTEGER, -- the originator
 			objvalue TEXT
 			);
--- INSERT INTO logbook_part_requests VALUES(1,1,1,0);
+INSERT INTO logbook_part_tasks VALUES(1,1,1,1,"{}");
 
 /*
  real parts
@@ -119,10 +122,11 @@ CREATE TABLE logbook_parts (
 			id INTEGER PRIMARY KEY, 
 			part_basenumber  VARCHAR( 50 ) NOT NULL ,
 			part_serial  VARCHAR( 50 ) NOT NULL ,
-			build_into_id  INTEGER
+			build_into_id  INTEGER ,
+			workzone_id INTEGER NOT NULL
 			);
-INSERT INTO logbook_parts VALUES(1,'vehicle','D1',0);
-INSERT INTO logbook_parts VALUES(2,'BP21-14401-AKA','000001',1);
+INSERT INTO logbook_parts VALUES(1,'vehicle','D1',0,1);
+INSERT INTO logbook_parts VALUES(2,'BP21-14401-AKA','000001',1,1);
 
 
 
